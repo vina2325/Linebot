@@ -24,12 +24,19 @@ const bot = linebot({
 bot.on('message', async (event) => {
   let msg = ''
   try {
-    const data = await rp({ uri: 'https://kktix.com/events.json', json: true })
-    msg = data.entry[0].title
+    const data = await rp({ uri: `https://opendata.epa.gov.tw/webapi/api/rest/datastore/355000000I-000467?filters=Country%20eq%20%27${escape(event.message.text)}%27&offset=0&limit=1000`, json: true })
+
+    for (let i = 0; i < data.result.records.length; i++) {
+      msg += data.result.records[i].Name + '\n'
+
+      if (i === 30) { break }
+    }
   } catch (error) {
-    msg = '發生錯誤'
+    msg = '請輸入正確訊息'
   }
   event.reply(msg)
+  console.log(event)
+  console.log(msg)
 })
 
 // 在port啟動
