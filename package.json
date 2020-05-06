@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemron index.js"
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
