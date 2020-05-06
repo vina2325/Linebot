@@ -43,6 +43,7 @@ const bot = linebot({
 
 bot.on('message', async (event) => {
   let msg = []
+  const msg2 = []
   try {
     if (event.message.type === 'location') {
       const data = await rp({
@@ -54,26 +55,28 @@ bot.on('message', async (event) => {
         if (i === 30) { break }
       }
 
-      msg += '請輸入欲前往廁所的名稱'
-    } else if (event.message === 'test') {
+      msg += '〰〰〰〰〰〰〰〰〰〰〰〰〰' + '\n' + '✍請輸入欲前往【廁所名稱】'
+    } else if (event.message.type === 'text') {
       const map = await rp({
         uri: `https://opendata.epa.gov.tw/webapi/api/rest/datastore/355000000I-000467?filters=Name%20eq%20%27${escape(event.message.text)}%27&offset=0&limit=1000`,
         json: true
       })
-      msg = {
+      msg2.push({
         type: 'location',
         title: map.result.records[0].Name,
         address: map.result.records[0].Address,
         latitude: map.result.records[0].Latitude,
         longitude: map.result.records[0].Longitude
-      }
+      })
     }
   } catch (error) {
     msg = '請輸入正確訊息'
   }
   event.reply(msg)
+  event.reply(msg2)
   console.log(event)
   console.log(msg)
+  console.log(msg2)
 })
 
 // 在port啟動
