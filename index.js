@@ -42,16 +42,31 @@ const bot = linebot({
 // })
 
 bot.on('message', async (event) => {
-  let msg = ''
+  let msg = []
   try {
-    const data = await rp({
-      uri: `https://opendata.epa.gov.tw/webapi/api/rest/datastore/355000000I-000467?filters=Longitude%20gt%20%27${(event.message.longitude) - 0.0103637682661416}%27%20and%20Longitude%20lt%20%27${(event.message.longitude) + 0.0103637682661416}%27%20and%20Latitude%20lt%20%27${(event.message.latitude) + 0.009021199819576}%27%20and%20Latitude%20gt%20%27${(event.message.latitude) - 0.009021199819576}%27&offset=0&limit=1000`,
-      json: true
-    })
-    for (let i = 0; i < data.result.records.length; i++) {
-      msg += '🚾' + data.result.records[i].Name + '\n' + '➡' + data.result.records[i].Address + '\n' + '🈴' + data.result.records[i].Grade + '\n' + ' ' + '\n'
+    if (event.message.type === 'location') {
+      const data = await rp({
+        uri: `https://opendata.epa.gov.tw/webapi/api/rest/datastore/355000000I-000467?filters=Longitude%20gt%20%27${(event.message.longitude) - 0.0103637682661416}%27%20and%20Longitude%20lt%20%27${(event.message.longitude) + 0.0103637682661416}%27%20and%20Latitude%20lt%20%27${(event.message.latitude) + 0.009021199819576}%27%20and%20Latitude%20gt%20%27${(event.message.latitude) - 0.009021199819576}%27&offset=0&limit=1000`,
+        json: true
+      })
+      for (let i = 0; i < data.result.records.length; i++) {
+        msg += '🚾' + data.result.records[i].Name + '\n' + '➡' + data.result.records[i].Address + '\n' + '🈴' + data.result.records[i].Grade + '\n' + ' ' + '\n'
+        if (i === 30) { break }
+      }
 
-      if (i === 30) { break }
+      msg += '請輸入欲前往廁所的名稱'
+    } else if (event.message === 'test') {
+      const map = await rp({
+        uri: `https://opendata.epa.gov.tw/webapi/api/rest/datastore/355000000I-000467?filters=Name%20eq%20%27${escape(event.message.text)}%27&offset=0&limit=1000`,
+        json: true
+      })
+      msg = {
+        type: 'location',
+        title: map.result.records[0].Name,
+        address: map.result.records[0].Address,
+        latitude: map.result.records[0].Latitude,
+        longitude: map.result.records[0].Longitude
+      }
     }
   } catch (error) {
     msg = '請輸入正確訊息'
