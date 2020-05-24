@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 // 引用linebot
 import linebot from 'linebot'
 // 引用dotenv 套件
@@ -61,9 +62,14 @@ bot.on('message', async (event) => {
         // })
         if (i >= 9) { break }
       }
-
       msg += '〰〰〰〰〰〰〰〰〰〰〰〰〰' + '\n' + '✍請輸入欲前往【廁所名稱】'
-    } else if (event.message.type === 'text') {
+    }
+  } catch (error) {
+    msg = '附近沒有公廁，請自行處理(,,Ծ‸Ծ,, )'
+  }
+
+  try {
+    if (event.message.type === 'text') {
       const map = await rp({
         uri: `https://opendata.epa.gov.tw/webapi/api/rest/datastore/355000000I-000467?filters=Name%20eq%20%27${escape(event.message.text)}%27&offset=0&limit=1000`,
         json: true
