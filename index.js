@@ -83,7 +83,14 @@ bot.on('message', async (event) => {
       })
     }
   } catch (error) {
-    msg = '請輸入正確訊息'
+    // msg = '請傳送您所在的位子'
+    event.reply([
+      { type: 'text', text: '請輸入正確格式' + '\n' + '\n' + '1⃣傳送您所在位置🌎' + '\n' + '2⃣輸入您欲前往廁所的名稱🚻 ' + '\n' + '(名稱都要正確喔!)' }, {
+        type: 'image',
+        originalContentUrl: 'https://github.com/vina2325/Linebot/blob/master/imgs/01.jpg',
+        previewImageUrl: 'https://github.com/vina2325/Linebot/blob/master/imgs/02.jpg'
+      }
+    ])
   }
   event.reply(msg)
   event.reply(msg2)
